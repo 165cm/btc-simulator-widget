@@ -4,20 +4,7 @@ compatibility_date = "2024-11-29"
 
 [build]
 command = "npm run build"
+pages_build_output_dir = "dist"
 
 [site]
 bucket = "./dist"
-
-[build.upload]
-format = "modules"
-
-[env.production]
-name = "btc-simulator-widget"
-workers_dev = true
-
-[[headers]]
-for = "/*"
-[headers.values]
-Access-Control-Allow-Origin = "*"
-Cross-Origin-Embedder-Policy = "require-corp"
-Cross-Origin-Opener-Policy = "same-origin"
