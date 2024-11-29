@@ -1,8 +1,8 @@
+import './styles/tailwind.css';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import BTCSimulator from './components/BTCSimulator';
 
-// ウィジェットのマウント関数
 function mount(elementId, config = {}) {
     const container = document.getElementById(elementId);
     if (container) {
@@ -22,7 +22,6 @@ function mount(elementId, config = {}) {
     return false;
 }
 
-// グローバルオブジェクトとして公開
 if (typeof window !== 'undefined') {
     window.BTCSimulator = { mount };
 }
