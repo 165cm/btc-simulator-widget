@@ -1,17 +1,16 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].[contenthash].js',
+    filename: 'btc-simulator.[contenthash].js',
     library: 'BTCSimulator',
     libraryTarget: 'umd',
     globalObject: 'this',
-    clean: true,
-    publicPath: '/'
+    clean: true
   },
   module: {
     rules: [
@@ -27,7 +26,21 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader']
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [
+                  'tailwindcss',
+                  'autoprefixer',
+                ],
+              },
+            },
+          },
+        ],
       }
     ]
   },
@@ -36,17 +49,17 @@ module.exports = {
       template: './public/index.html',
       inject: true
     }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production')
-      }
+    new MiniCssExtractPlugin({
+      filename: 'styles.[contenthash].css'
     })
   ],
-  resolve: {
-    extensions: ['.js', '.jsx'],
-    alias: {
-      '@': path.resolve(__dirname, 'src'),
-      'components': path.resolve(__dirname, 'src/components')
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      name: 'vendor'
     }
+  },
+  resolve: {
+    extensions: ['.js', '.jsx']
   }
 };
