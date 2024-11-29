@@ -1,31 +1,52 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BTCシミュレーター ウィジェット</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body>
-    <div class="max-w-4xl mx-auto p-4">
-        <h1 class="text-2xl font-bold mb-4">BTCシミュレーター ウィジェット</h1>
-        
-        <div id="btc-simulator" class="mb-8"></div>
-        
-        <div class="mt-8 p-4 bg-gray-50 rounded-lg">
-            <h2 class="text-xl font-semibold mb-4">埋め込みコード</h2>
-            <pre class="bg-gray-800 text-white p-4 rounded overflow-x-auto"><code>&lt;!-- BTCシミュレーター ウィジェット --&gt;
-&lt;div id="btc-simulator"&gt;&lt;/div&gt;
-&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;
-&lt;script async src="https://[CLOUDFLARE_URL]/main.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-    window.addEventListener('load', function() {
-        if (typeof BTCSimulator !== 'undefined') {
-            BTCSimulator.mount('btc-simulator');
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].[contenthash].js',
+    library: 'BTCSimulator',
+    libraryTarget: 'umd',
+    globalObject: 'this',
+    clean: true,
+    publicPath: '/'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-react']
+          }
         }
-    });
-&lt;/script&gt;</code></pre>
-        </div>
-    </div>
-</body>
-</html>
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader', 'postcss-loader']
+      }
+    ]
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+      inject: true
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production')
+      }
+    })
+  ],
+  resolve: {
+    extensions: ['.js', '.jsx'],
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+      'components': path.resolve(__dirname, 'src/components')
+    }
+  }
+};
