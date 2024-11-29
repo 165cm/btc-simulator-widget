@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ウィジェット固有のスタイル */
+#btc-simulator {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.btc-simulator-widget {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}

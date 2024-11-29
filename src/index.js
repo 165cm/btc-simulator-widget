@@ -3,16 +3,19 @@ import { createRoot } from 'react-dom/client';
 import BTCSimulator from './BTCSimulator';
 import './styles.css';
 
-// ウィジェットの初期化関数
-const initBTCSimulator = (targetElement, options = {}) => {
-  const root = createRoot(targetElement);
-  root.render(<BTCSimulator {...options} />);
-};
+// アプリケーションのルートを初期化
+const container = document.getElementById('btc-simulator');
+const root = createRoot(container);
+root.render(
+  <React.StrictMode>
+    <BTCSimulator />
+  </React.StrictMode>
+);
 
-// グローバルオブジェクトとして公開
+// ウィジェットとしても使えるように公開
 window.BTCSimulatorWidget = {
-  init: initBTCSimulator
+  init: (targetElement, options = {}) => {
+    const root = createRoot(targetElement);
+    root.render(<BTCSimulator {...options} />);
+  }
 };
-
-// モジュールとしてもエクスポート
-export default initBTCSimulator;

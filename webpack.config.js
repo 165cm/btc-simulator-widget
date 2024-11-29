@@ -14,7 +14,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -26,7 +26,7 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          MiniCssExtractPlugin.loader,
+          'style-loader',
           'css-loader',
           'postcss-loader'
         ]
@@ -36,7 +36,6 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html',
-      inject: 'body'
     }),
     new MiniCssExtractPlugin({
       filename: 'styles.css'
@@ -47,6 +46,7 @@ module.exports = {
   },
   devServer: {
     static: './dist',
-    hot: true
+    hot: true,
+    open: true
   }
 };
