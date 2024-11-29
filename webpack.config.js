@@ -9,7 +9,8 @@ module.exports = {
     filename: 'btc-simulator-widget.js',
     library: 'BTCSimulatorWidget',
     libraryTarget: 'umd',
-    clean: true
+    clean: true,
+    publicPath: '/btc-simulator-widget/'  // GitHub Pagesのリポジトリ名に合わせる
   },
   module: {
     rules: [
