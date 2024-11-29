@@ -6,7 +6,7 @@ dotenv.config();
 
 const commands = [
   'npm run build',
-  'npx wrangler publish'
+  'npx wrangler deploy'
 ];
 
 async function deploy() {
