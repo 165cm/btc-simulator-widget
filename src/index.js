@@ -1,29 +1,18 @@
-import './styles/tailwind.css';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import BTCSimulator from './components/BTCSimulator';
+import BTCSimulator from './BTCSimulator';
+import './styles.css';
 
-function mount(elementId, config = {}) {
-    const container = document.getElementById(elementId);
-    if (container) {
-        try {
-            const root = createRoot(container);
-            root.render(
-                <React.StrictMode>
-                    <BTCSimulator {...config} />
-                </React.StrictMode>
-            );
-            return true;
-        } catch (error) {
-            console.error('Error mounting BTCSimulator:', error);
-            return false;
-        }
-    }
-    return false;
-}
+// ウィジェットの初期化関数
+const initBTCSimulator = (targetElement, options = {}) => {
+  const root = createRoot(targetElement);
+  root.render(<BTCSimulator {...options} />);
+};
 
-if (typeof window !== 'undefined') {
-    window.BTCSimulator = { mount };
-}
+// グローバルオブジェクトとして公開
+window.BTCSimulatorWidget = {
+  init: initBTCSimulator
+};
 
-export default { mount };
+// モジュールとしてもエクスポート
+export default initBTCSimulator;
