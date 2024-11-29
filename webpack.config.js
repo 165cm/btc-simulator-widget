@@ -10,7 +10,7 @@ module.exports = {
     library: 'BTCSimulatorWidget',
     libraryTarget: 'umd',
     clean: true,
-    publicPath: '/btc-simulator-widget/'  // GitHub Pagesのリポジトリ名に合わせる
+    publicPath: '/' // この行を追加
   },
   module: {
     rules: [
@@ -37,6 +37,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html',
+      inject: 'body'
     }),
     new MiniCssExtractPlugin({
       filename: 'styles.css'
