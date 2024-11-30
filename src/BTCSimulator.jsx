@@ -98,7 +98,7 @@ const BTCSimulator = () => {
                     </span>
                   </div>
                   <div className="flex items-center">
-                    <span className="text-sm text-gray-600">最終評価額</span>
+                    <span className="text-sm text-gray-600">評価額</span>
                     <span className="text-sm font-bold ml-2">
                       約{formatCurrency(simulation.finalValue)}
                     </span>
