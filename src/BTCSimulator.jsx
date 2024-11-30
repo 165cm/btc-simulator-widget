@@ -1,43 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Landmark, DollarSign, Coins, ExternalLink } from 'lucide-react';
-
-// スタンドアロン版のためにCardコンポーネントを簡略化
-const Card = ({ children, className }) => (
-  <div className={`bg-white rounded-lg shadow ${className}`}>{children}</div>
-);
-
-const CardHeader = ({ children }) => (
-  <div className="p-4 border-b">{children}</div>
-);
-
-const CardTitle = ({ children }) => (
-  <h2 className="text-lg md:text-xl font-bold">{children}</h2>
-);
-
-const CardContent = ({ children }) => (
-  <div className="p-4">{children}</div>
-);
-
-// スライダーコンポーネントの簡略化
-const Slider = ({ value, onValueChange, min, max, step }) => (
-  <input
-    type="range"
-    value={value}
-    onChange={(e) => onValueChange([parseInt(e.target.value)])}
-    min={min}
-    max={max}
-    step={step}
-    className="w-full"
-  />
-);
+import { DollarSign, Coins, Landmark } from 'lucide-react';
 
 const BTCSimulator = () => {
-  // 初期値の設定
-  const [currentPrice, setCurrentPrice] = useState(15000000);
+  // 定数
+  const currentPrice = 15000000; // 現在のBTC価格
+  const totalBTCSupply = 19_600_000; // BTCの総供給量
+
+  // State
   const [monthlyInvestment, setMonthlyInvestment] = useState(10000);
   const [years, setYears] = useState(15);
-  const [expectedPrice, setExpectedPrice] = useState(15000000 * 3);
+  const [expectedPrice, setExpectedPrice] = useState(45000000);
+
+  // 時価総額計算
+  const calculateMarketCap = (price) => {
+    return (price * totalBTCSupply) / 150_000_000_000_000; // 円からドルへの換算も含む
+  };
 
   // 市場規模比較データ
   const marketCapComparisons = [
@@ -47,15 +25,8 @@ const BTCSimulator = () => {
     { name: 'S&P500', cap: 45.84, icon: Landmark, color: '#0A4595' }
   ];
 
-  const calculateMarketCap = (price) => {
-    const totalBTC = 19_600_000;
-    return (price / 150) * totalBTC / 1_000_000_000_000;
-  };
-
-  const currentMarketCap = calculateMarketCap(currentPrice);
-  const expectedMarketCap = calculateMarketCap(expectedPrice);
-
-  const calculateSimulation = () => {
+  // シミュレーション計算
+  const simulation = useMemo(() => {
     const totalMonths = years * 12;
     const multiplier = expectedPrice / currentPrice;
     const monthlyGrowthRate = Math.pow(multiplier, 1/totalMonths) - 1;
@@ -71,7 +42,8 @@ const BTCSimulator = () => {
         totalInvestment += monthlyInvestment;
       }
       
-      if (month % 12 === 0) {
+      // 5年区切りでデータポイントを生成
+      if (month % 60 === 0) {
         data.push({
           year: 2025 + month / 12,
           価値: Math.round(totalBTC * price),
@@ -80,172 +52,217 @@ const BTCSimulator = () => {
       }
     }
     
+    // 最終年のデータポイントを追加
+    if (totalMonths % 60 !== 0) {
+      data.push({
+        year: 2025 + totalMonths / 12,
+        価値: Math.round(totalBTC * expectedPrice),
+        投資額: totalInvestment
+      });
+    }
+    
     return {
       data,
       totalBTC,
       totalInvestment,
       finalValue: totalBTC * expectedPrice,
-      roi: ((totalBTC * expectedPrice - totalInvestment) / totalInvestment * 100)
+      roi: ((totalBTC * expectedPrice - totalInvestment) / totalInvestment * 100),
+      expectedMarketCap: calculateMarketCap(expectedPrice)
     };
+  }, [monthlyInvestment, years, expectedPrice]);
+
+  // 金額のフォーマット
+  const formatCurrency = (value) => {
+    if (value >= 100000000) {
+      return `${Math.floor(value / 100000000)}億${Math.floor((value % 100000000) / 10000)}万円`;
+    }
+    return `${Math.floor(value / 10000)}万円`;
   };
 
-  const simulation = calculateSimulation();
-
   return (
-    <Card className="w-full max-w-3xl mx-auto">
-      <CardHeader>
-        <CardTitle>ビットコイン積立シミュレーター</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4 md:space-y-6">
-          {/* 入力フォーム */}
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">月間投資額（円）</label>
-              <select 
-                value={monthlyInvestment}
-                onChange={(e) => setMonthlyInvestment(Number(e.target.value))}
-                className="w-full p-2 border rounded text-base md:text-sm"
-              >
-                <option value={5000}>5,000円</option>
-                <option value={10000}>10,000円</option>
-                <option value={30000}>30,000円</option>
-                <option value={50000}>50,000円</option>
-              </select>
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium">積立期間</label>
-              <div className="px-2">
-                <Slider 
-                  value={[years]}
-                  onValueChange={(value) => setYears(value[0])}
-                  max={30}
-                  min={5}
-                  step={5}
-                  className="my-4"
-                />
-                <div className="text-center text-sm">{years}年間（{2025 + years}年まで）</div>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium">
-                予想BTC価格（現在の{Math.round((expectedPrice/currentPrice) * 10) / 10}倍）
-              </label>
-              <div className="px-2">
-                <Slider 
-                  value={[expectedPrice]}
-                  onValueChange={(value) => setExpectedPrice(Math.round(value / 1000000) * 1000000)}
-                  max={currentPrice * 20}
-                  min={currentPrice}
-                  step={1000000}
-                  className="my-4"
-                />
-                <div className="text-center text-sm">
-                  {expectedPrice >= 100000000 
-                    ? `${Math.floor(expectedPrice / 100000000)}億${Math.floor((expectedPrice % 100000000) / 10000)}万円`
-                    : `${Math.round(expectedPrice).toLocaleString()}円`
-                  }
+    <div className="w-full max-w-3xl mx-auto">
+      {/* ウィジェットフレーム */}
+      <div className="bg-gradient-to-b from-blue-50 to-white border border-blue-100 rounded-xl shadow-lg overflow-hidden">
+        {/* コンテンツエリア */}
+        <div className="p-1">
+          <div className="bg-white rounded-lg">
+            {/* シミュレーション結果表示 */}
+            <div className="p-4 border-b">
+              <h2 className="text-lg font-bold mb-3">ビットコイン積立シミュレーター</h2>
+              <div className="bg-gray-50 p-3 rounded">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  <div className="flex items-center">
+                    <span className="text-sm text-gray-600">総投資額</span>
+                    <span className="text-sm font-bold ml-2">
+                      {formatCurrency(simulation.totalInvestment)}
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-sm text-gray-600">最終評価額</span>
+                    <span className="text-sm font-bold ml-2">
+                      約{formatCurrency(simulation.finalValue)}
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-sm text-gray-600">取得BTC</span>
+                    <span className="text-sm font-mono font-medium ml-2">
+                      {simulation.totalBTC.toFixed(4)}
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-sm text-gray-600">収益率</span>
+                    <span className="text-sm font-bold ml-2">
+                      {Math.round(simulation.roi)}%
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* 市場規模比較（レスポンシブ対応） */}
-          <div className="bg-blue-50 p-3 md:p-4 rounded-lg">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium">時価総額比較</h3>
-              <div className="text-xs text-blue-600">
-                予想: {expectedMarketCap.toFixed(1)}兆ドル
-              </div>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-              {marketCapComparisons.map((item, index) => {
-                const Icon = item.icon;
-                const isExpectedInRange = expectedMarketCap <= item.cap && 
-                  (index === 0 || expectedMarketCap > marketCapComparisons[index - 1].cap);
-                
-                return (
-                  <div 
-                    key={item.name}
-                    className={`flex items-center p-1.5 rounded ${isExpectedInRange ? 'bg-blue-100' : ''}`}
-                  >
-                    <Icon style={{ color: item.color }} className="w-4 h-4 mr-1.5" />
-                    <div className="min-w-0">
-                      <div className="text-sm truncate">{item.name}</div>
-                      <div className="text-xs text-gray-600">{item.cap}兆ドル</div>
-                    </div>
+            <div className="flex flex-col md:flex-row md:items-start p-4 gap-4">
+              <div className="md:w-2/5 space-y-3">
+                {/* 積立投資額 */}
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium">積立投資額(円)</label>
+                    <span className="text-xs text-gray-600">
+                      {monthlyInvestment.toLocaleString()}円
+                    </span>
                   </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* シミュレーション結果 */}
-          <div className="bg-gray-50 p-3 md:p-4 rounded-lg">
-            <h3 className="text-sm font-medium mb-3">シミュレーション結果</h3>
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <div>
-                <div className="text-xs text-gray-600">総投資額</div>
-                <div className="text-sm font-medium">{Math.round(simulation.totalInvestment).toLocaleString()}円</div>
-              </div>
-              <div>
-                <div className="text-xs text-gray-600">最終評価額</div>
-                <div className="text-sm font-medium">{Math.round(simulation.finalValue).toLocaleString()}円</div>
-              </div>
-              <div>
-                <div className="text-xs text-gray-600">取得BTC数</div>
-                <div className="text-sm font-medium">{simulation.totalBTC.toFixed(8)} BTC</div>
-              </div>
-              <div>
-                <div className="text-xs text-gray-600">投資収益率</div>
-                <div className="text-sm font-medium">{Math.round(simulation.roi)}%</div>
-              </div>
-            </div>
-
-            <div className="h-48 md:h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={simulation.data} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
-                  <XAxis 
-                    dataKey="year" 
-                    tick={{ fontSize: 12 }}
-                    tickFormatter={(value) => value.toString().slice(-2)}
+                  <input
+                    type="range"
+                    value={monthlyInvestment}
+                    onChange={(e) => setMonthlyInvestment(parseInt(e.target.value))}
+                    min={5000}
+                    max={100000}
+                    step={5000}
+                    className="w-full"
                   />
-                  <YAxis 
-                    tick={{ fontSize: 12 }}
-                    tickFormatter={(value) => {
-                      if (value >= 100000000) {
-                        return `${Math.floor(value / 10000)}万`;
-                      }
-                      return `${Math.round(value/10000)}万`;
-                    }}
-                  />
-                  <Tooltip 
-                    formatter={(value) => {
-                      if (value >= 100000000) {
-                        return [`${Math.floor(value / 100000000)}億${Math.floor((value % 100000000) / 10000)}万円`];
-                      }
-                      return [`${Math.round(value/10000)}万円`];
-                    }}
-                    labelFormatter={(label) => `${label}年`}
-                  />
-                  <Line type="monotone" dataKey="価値" stroke="#2563eb" name="評価額" strokeWidth={2} />
-                  <Line type="monotone" dataKey="投資額" stroke="#9ca3af" name="投資額" strokeWidth={2} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
+                </div>
 
-          {/* フッター部分 */}
-          <div className="text-center space-y-2">
-            <div className="text-xs text-gray-500">
-              ※ このシミュレーションは参考値です。実際の投資成果を保証するものではありません。
+                {/* 積立期間 */}
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium">積立期間</label>
+                    <span className="text-xs text-gray-600">{years}年間（{2025 + years}年まで）</span>
+                  </div>
+                  <input
+                    type="range"
+                    value={years}
+                    onChange={(e) => setYears(parseInt(e.target.value))}
+                    min={5}
+                    max={30}
+                    step={5}
+                    className="w-full"
+                  />
+                </div>
+
+                {/* 予想BTC価格 */}
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium">
+                      予想BTC価格（現在の{(expectedPrice/currentPrice).toFixed(1)}倍）
+                    </label>
+                    <span className="text-xs text-gray-600">
+                      {formatCurrency(expectedPrice)}
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    value={expectedPrice}
+                    onChange={(e) => setExpectedPrice(parseInt(e.target.value))}
+                    min={currentPrice}
+                    max={currentPrice * 20}
+                    step={1000000}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+
+              {/* グラフエリア */}
+              <div className="md:w-3/5">
+                <div className="h-40">
+                  <ResponsiveContainer>
+                    <LineChart data={simulation.data}>
+                      <XAxis 
+                        dataKey="year" 
+                        tick={{ fontSize: 10 }}
+                        tickFormatter={(value) => value.toString().slice(-2)} 
+                      />
+                      <YAxis 
+                        tick={{ fontSize: 10 }}
+                        tickFormatter={(value) => `${Math.round(value/10000)}万`}
+                      />
+                      <Tooltip 
+                        formatter={(value) => {
+                          if (value >= 100000000) {
+                            return [`${Math.floor(value / 100000000)}億${Math.floor((value % 100000000) / 10000)}万円`];
+                          }
+                          return [`${Math.round(value/10000)}万円`];
+                        }}
+                        labelFormatter={(label) => `${label}年`}
+                      />
+                      <Line type="monotone" dataKey="価値" stroke="#2563eb" strokeWidth={2} />
+                      <Line type="monotone" dataKey="投資額" stroke="#9ca3af" strokeWidth={1} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+
+            {/* 時価総額比較 */}
+            <div className="p-3 bg-blue-50 mx-4 mb-4 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-medium">時価総額比較</h3>
+                <div className="text-xs text-blue-600">
+                  予想: {simulation.expectedMarketCap.toFixed(1)}兆ドル
+                </div>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                {marketCapComparisons.map((item, index) => {
+                  const Icon = item.icon;
+                  const isExpectedInRange = simulation.expectedMarketCap <= item.cap && 
+                    (index === 0 || simulation.expectedMarketCap > marketCapComparisons[index - 1].cap);
+                  
+                  return (
+                    <div 
+                      key={item.name}
+                      className={`flex items-center p-1.5 rounded ${isExpectedInRange ? 'bg-blue-100' : ''}`}
+                    >
+                      <Icon className="w-4 h-4 mr-1.5" style={{ color: item.color }} />
+                      <div className="min-w-0">
+                        <div className="text-sm truncate">{item.name}</div>
+                        <div className="text-xs text-gray-600">{item.cap}兆ドル</div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            
+            {/* 注意書きとクレジット */}
+            <div className="border-t">
+              <div className="p-2 text-xs text-gray-500 text-center">
+                ※ このシミュレーションは参考値です
+              </div>
+              <div className="px-2 pb-2 text-xs text-center">
+                <a 
+                  href="https://www.nomadkazoku.com/bitcoin-jidou-tsumitate/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 inline-flex items-center gap-1"
+                >
+                  Powered by ノマド家族 BTC自動積立「こつこつコイン」
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
