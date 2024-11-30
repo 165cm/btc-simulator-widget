@@ -88,7 +88,7 @@ const BTCSimulator = () => {
           <div className="bg-white rounded-lg">
             {/* シミュレーション結果表示 */}
             <div className="p-4 border-b">
-              <h2 className="text-lg font-bold mb-3">ビットコイン積立シミュレーター</h2>
+              <div className="text-lg font-bold mb-3">ビットコイン積立シミュレーター</div>
               <div className="bg-gray-50 p-3 rounded">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                   <div className="flex items-center">
@@ -213,7 +213,7 @@ const BTCSimulator = () => {
             {/* 時価総額比較 */}
             <div className="p-3 bg-blue-50 mx-4 mb-4 rounded-lg">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-sm font-medium">時価総額比較</h3>
+                <div className="text-sm font-medium">時価総額比較</div>
                 <div className="text-xs text-blue-600">
                   予想: {simulation.expectedMarketCap.toFixed(1)}兆ドル
                 </div>
