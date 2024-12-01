@@ -9,8 +9,8 @@ const BTCSimulator = () => {
 
   // State
   const [monthlyInvestment, setMonthlyInvestment] = useState(10000);
-  const [years, setYears] = useState(15);
-  const [expectedPrice, setExpectedPrice] = useState(45000000);
+  const [years, setYears] = useState(5);
+  const [expectedPrice, setExpectedPrice] = useState(15000000);
 
   // 時価総額計算
   const calculateMarketCap = (price) => {
@@ -25,51 +25,42 @@ const BTCSimulator = () => {
     { name: 'S&P500', cap: 45.84, icon: Landmark, color: '#0A4595' }
   ];
 
-  // シミュレーション計算
-  const simulation = useMemo(() => {
-    const totalMonths = years * 12;
-    const multiplier = expectedPrice / currentPrice;
-    const monthlyGrowthRate = Math.pow(multiplier, 1/totalMonths) - 1;
-    
-    const data = [];
-    let totalBTC = 0;
-    let totalInvestment = 0;
-    
-    for (let month = 0; month <= totalMonths; month++) {
-      const price = currentPrice * Math.pow(1 + monthlyGrowthRate, month);
-      if (month > 0) {
-        totalBTC += monthlyInvestment / price;
-        totalInvestment += monthlyInvestment;
-      }
-      
-      // 5年区切りでデータポイントを生成
-      if (month % 60 === 0) {
-        data.push({
-          year: 2025 + month / 12,
-          価値: Math.round(totalBTC * price),
-          投資額: totalInvestment
-        });
-      }
+// シミュレーション計算
+const simulation = useMemo(() => {
+  const totalMonths = years * 12;
+  const multiplier = expectedPrice / currentPrice;
+  const monthlyGrowthRate = Math.pow(multiplier, 1/totalMonths) - 1;
+  
+  const data = [];
+  let totalBTC = 0;
+  let totalInvestment = 0;
+  
+  for (let month = 0; month <= totalMonths; month++) {
+    const price = currentPrice * Math.pow(1 + monthlyGrowthRate, month);
+    if (month > 0) {
+      totalBTC += monthlyInvestment / price;
+      totalInvestment += monthlyInvestment;
     }
     
-    // 最終年のデータポイントを追加
-    if (totalMonths % 60 !== 0) {
+    // 1年ごとにデータポイントを生成
+    if (month % 12 === 0) {
       data.push({
-        year: 2025 + totalMonths / 12,
-        価値: Math.round(totalBTC * expectedPrice),
+        year: 2025 + month / 12,
+        価値: Math.round(totalBTC * price),
         投資額: totalInvestment
       });
     }
-    
-    return {
-      data,
-      totalBTC,
-      totalInvestment,
-      finalValue: totalBTC * expectedPrice,
-      roi: ((totalBTC * expectedPrice - totalInvestment) / totalInvestment * 100),
-      expectedMarketCap: calculateMarketCap(expectedPrice)
-    };
-  }, [monthlyInvestment, years, expectedPrice]);
+  }
+  
+  return {
+    data,
+    totalBTC,
+    totalInvestment,
+    finalValue: totalBTC * expectedPrice,
+    roi: ((totalBTC * expectedPrice - totalInvestment) / totalInvestment * 100),
+    expectedMarketCap: calculateMarketCap(expectedPrice)
+  };
+}, [monthlyInvestment, years, expectedPrice]);
 
   // 金額のフォーマット
   const formatCurrency = (value) => {
@@ -140,22 +131,22 @@ const BTCSimulator = () => {
                   />
                 </div>
 
-                {/* 積立期間 */}
-                <div>
-                  <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium">積立期間</label>
-                    <span className="text-xs text-gray-600">{years}年間（{2025 + years}年まで）</span>
-                  </div>
-                  <input
-                    type="range"
-                    value={years}
-                    onChange={(e) => setYears(parseInt(e.target.value))}
-                    min={5}
-                    max={30}
-                    step={5}
-                    className="w-full"
-                  />
-                </div>
+            {/* 積立期間 */}
+            <div>
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium">積立期間</label>
+                <span className="text-xs text-gray-600">{years}年間（{2025 + years}年まで）</span>
+              </div>
+              <input
+                type="range"
+                value={years}
+                onChange={(e) => setYears(parseInt(e.target.value))}
+                min={1}
+                max={10}
+                step={1}
+                className="w-full"
+              />
+            </div>
 
                 {/* 予想BTC価格 */}
                 <div>
@@ -187,7 +178,8 @@ const BTCSimulator = () => {
                       <XAxis 
                         dataKey="year" 
                         tick={{ fontSize: 10 }}
-                        tickFormatter={(value) => value.toString().slice(-2)} 
+                        tickFormatter={(value) => value.toString().slice(-2)}
+                        ticks={simulation.data.map(d => d.year)} // すべての年を表示
                       />
                       <YAxis 
                         tick={{ fontSize: 10 }}
