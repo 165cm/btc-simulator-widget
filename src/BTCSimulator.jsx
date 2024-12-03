@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { DollarSign, Coins, Landmark } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+
 
 const BTCSimulator = () => {
   // 定数

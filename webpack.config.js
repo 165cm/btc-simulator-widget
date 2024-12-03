@@ -1,16 +1,38 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'btc-simulator-widget.js',
-    library: 'BTCSimulatorWidget',
-    libraryTarget: 'umd',
+    filename: '[name].bundle.js',
+    library: {
+      name: 'BTCSimulatorWidget',
+      type: 'umd'
+    },
     clean: true,
-    publicPath: '/' // この行を追加
+    publicPath: '/'
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true,
+        },
+      },
+    },
+    usedExports: true,  // Tree Shaking を有効化
+    minimize: true      // プロダクションビルドで最小化
   },
   module: {
     rules: [
@@ -41,6 +63,11 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       filename: 'styles.css'
+    }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: true,
+      reportFilename: 'bundle-analysis.html'
     })
   ],
   resolve: {
