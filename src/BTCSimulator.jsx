@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { DollarSign, Coins, Landmark } from 'lucide-react';
+import { DollarSign, Coins, Landmark, Info } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-
 
 const BTCSimulator = () => {
   // 定数
@@ -11,7 +10,8 @@ const BTCSimulator = () => {
   // State
   const [monthlyInvestment, setMonthlyInvestment] = useState(10000);
   const [years, setYears] = useState(5);
-  const [expectedPrice, setExpectedPrice] = useState(15000000);
+  const [expectedPrice, setExpectedPrice] = useState(currentPrice * 2); // デフォルトで2倍
+  const [showEmbedInfo, setShowEmbedInfo] = useState(false);
 
   // 時価総額計算
   const calculateMarketCap = (price) => {
@@ -97,14 +97,14 @@ const simulation = useMemo(() => {
                   </div>
                   <div className="flex items-center">
                     <span className="text-sm text-gray-600">取得BTC</span>
-                    <span className="text-sm font-mono font-medium ml-2">
+                    <span className="text-sm font-mono font-bold ml-2">
                       {simulation.totalBTC.toFixed(4)}
                     </span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-sm text-gray-600">収益率</span>
                     <span className="text-sm font-bold ml-2">
-                      {Math.round(simulation.roi)}%
+                      {simulation.roi > 0 ? '+ ' : ''}{Math.round(simulation.roi)}%
                     </span>
                   </div>
                 </div>
@@ -232,12 +232,53 @@ const simulation = useMemo(() => {
                 })}
               </div>
             </div>
-            
+
+            {/* 埋め込みコードモーダル */}
+            {showEmbedInfo && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg p-6 max-w-lg w-full mx-4">
+                  <h3 className="text-lg font-bold mb-4">ウィジェットの埋め込み方法</h3>
+                  
+                  {/* 通常の埋め込みコード */}
+                  <h4 className="text-md font-semibold mb-2">HTML での埋め込み</h4>
+                  <pre className="bg-gray-100 p-4 rounded text-sm overflow-x-auto mb-4">
+                    {`<!-- BTCシミュレーターウィジェット -->
+<link href="https://btc-simulator-widget.pages.dev/btc-simulator-widget.css" rel="stylesheet">
+<div id="btc-simulator" class="btc-simulator-widget"></div>
+<script src="https://btc-simulator-widget.pages.dev/btc-simulator-widget.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.BTCSimulatorWidget) {
+      BTCSimulatorWidget.init(document.getElementById('btc-simulator'));
+    }
+  });
+</script>`}
+                  </pre>
+
+                  {/* WordPress向けの説明 */}
+                  <h4 className="text-md font-semibold mb-2">WordPress での埋め込み</h4>
+                  <ol className="list-decimal list-inside mb-4 text-sm space-y-2">
+                    <li>投稿/固定ページの編集画面で「カスタムHTML」ブロックを追加</li>
+                    <li>上記のコードをブロックにコピー＆ペースト</li>
+                    <li>プレビューまたは公開して表示を確認</li>
+                  </ol>
+
+                  <button
+                    onClick={() => setShowEmbedInfo(false)}
+                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full"
+                  >
+                    閉じる
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* 注意書きとクレジット */}
-            <div className="border-t">
+            <div className="border-t relative">
               <div className="p-2 text-xs text-gray-500 text-center">
                 ※ このシミュレーションは参考値です
               </div>
+              {/* PoweredByは中央揃えのまま */}
               <div className="px-2 pb-2 text-xs text-center">
                 <a 
                   href="https://www.nomadkazoku.com/bitcoin-jidou-tsumitate/"
@@ -251,6 +292,16 @@ const simulation = useMemo(() => {
                   </svg>
                 </a>
               </div>
+
+              {/* Infoボタンを絶対位置で右下に配置 */}
+              <button
+                onClick={() => setShowEmbedInfo(true)}
+                className="absolute bottom-2 right-2 text-blue-600 hover:text-blue-700 bg-transparent border-none"
+                title="埋め込みコードを表示"
+                style={{ outline: 'none', boxShadow: 'none' }}
+              >
+                <Info className="w-5 h-5" />
+              </button>
             </div>
           </div>
         </div>

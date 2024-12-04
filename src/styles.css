@@ -8,6 +8,13 @@
   max-width: 800px;
   margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #ffffff; /* 明示的に背景色を設定 */
+}
+
+/* Tailwindのリセットを上書き */
+.btc-simulator-widget, .btc-simulator-widget * {
+  all: revert;
+  box-sizing: border-box;
 }
 
 /* カスタムスタイルをここに追加 */
