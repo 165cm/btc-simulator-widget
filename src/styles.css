@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* スコープされたスタイル */
+/* ウィジェット固有のスタイル */
 .btc-simulator-widget {
   width: 100%;
   max-width: 800px;
@@ -10,9 +10,4 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* Tailwindのユーティリティクラスの上書きを防ぐために優先度を上げる */
-.btc-simulator-widget .widget-content {
-  width: 100% !important;
-  max-width: 800px !important;
-  margin: 0 auto !important;
-}
+/* カスタムスタイルをここに追加 */

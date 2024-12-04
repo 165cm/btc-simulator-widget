@@ -6,86 +6,54 @@ module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
 
   return {
-    entry: {
-      'btc-simulator-widget': './src/index.js',
-    },
+    entry: './src/index.js',
     output: {
       path: path.resolve(__dirname, 'dist'),
-      filename: '[name].js',
+      filename: 'btc-simulator-widget.js',
       library: {
         name: 'BTCSimulatorWidget',
         type: 'umd',
         export: 'default',
       },
-      globalObject: 'this',
-      publicPath: '/',
+      globalObject: 'this'
     },
-    externals: isProduction ? {
-      'react': 'React',
-      'react-dom': 'ReactDOM',
-      'recharts': 'Recharts',
-    } : {},
     module: {
       rules: [
         {
           test: /\.(js|jsx)$/,
           exclude: /node_modules/,
           use: {
-            loader: 'babel-loader',
-          },
+            loader: 'babel-loader'
+          }
         },
         {
           test: /\.css$/,
           use: [
             MiniCssExtractPlugin.loader,
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 1,
-              },
-            },
-            {
-              loader: 'postcss-loader',
-              options: {
-                postcssOptions: {
-                  plugins: [
-                    'tailwindcss',
-                    'autoprefixer',
-                  ],
-                },
-              },
-            },
-          ],
-        },
-      ],
+            'css-loader',
+            'postcss-loader'
+          ]
+        }
+      ]
     },
     plugins: [
       new MiniCssExtractPlugin({
-        filename: 'btc-simulator-widget.css',
+        filename: 'btc-simulator-widget.css'
       }),
       new HtmlWebpackPlugin({
         template: './src/index.html',
-        inject: 'body',
-        scripts: isProduction ? [
-          'https://unpkg.com/react@18/umd/react.production.min.js',
-          'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js',
-          'https://unpkg.com/recharts/umd/Recharts.min.js'
-        ] : [],
-      }),
+        inject: true
+      })
     ],
     resolve: {
-      extensions: ['.js', '.jsx'],
-    },
-    optimization: {
-      minimize: isProduction,
+      extensions: ['.js', '.jsx']
     },
     devServer: {
       static: {
         directory: path.join(__dirname, 'dist'),
       },
-      compress: true,
-      port: 9000,
       hot: true,
-    },
+      open: true
+    }
   };
 };
