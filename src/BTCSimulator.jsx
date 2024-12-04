@@ -243,16 +243,18 @@ const simulation = useMemo(() => {
       <div className={styles.codeBlockWrapper}>
         <pre className={styles.codeBlock}>
           <code>{`<!-- BTCシミュレーターウィジェット -->
-<link href="https://btc-simulator-widget.pages.dev/btc-simulator-widget.css" rel="stylesheet">
-<div id="btc-simulator" class="btc-simulator-widget"></div>
-<script src="https://btc-simulator-widget.pages.dev/btc-simulator-widget.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    if (window.BTCSimulatorWidget) {
-      BTCSimulatorWidget.init(document.getElementById('btc-simulator'));
-    }
-  });
-</script>`}</code>
+<div style="width:100%; max-width:800px; margin:0 auto; background:#fff;">
+  <link href="https://btc-simulator-widget.pages.dev/btc-simulator-widget.css" rel="stylesheet">
+  <div id="btc-simulator" class="btc-simulator-widget"></div>
+  <script src="https://btc-simulator-widget.pages.dev/btc-simulator-widget.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.BTCSimulatorWidget) {
+        BTCSimulatorWidget.init(document.getElementById('btc-simulator'));
+      }
+    });
+  </script>
+</div>`}</code>
         </pre>
         <button 
           onClick={() => {
