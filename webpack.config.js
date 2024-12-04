@@ -6,22 +6,25 @@ module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
 
   return {
-    entry: './src/index.js',
+    entry: {
+      'btc-simulator-widget': './src/index.js',
+    },
     output: {
       path: path.resolve(__dirname, 'dist'),
-      filename: 'btc-simulator-widget.js',
+      filename: '[name].js',
       library: {
         name: 'BTCSimulatorWidget',
         type: 'umd',
         export: 'default',
       },
       globalObject: 'this',
+      publicPath: '/',
     },
-    externals: {
+    externals: isProduction ? {
       'react': 'React',
       'react-dom': 'ReactDOM',
       'recharts': 'Recharts',
-    },
+    } : {},
     module: {
       rules: [
         {
@@ -63,6 +66,11 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         template: './src/index.html',
         inject: 'body',
+        scripts: isProduction ? [
+          'https://unpkg.com/react@18/umd/react.production.min.js',
+          'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js',
+          'https://unpkg.com/recharts/umd/Recharts.min.js'
+        ] : [],
       }),
     ],
     resolve: {
@@ -70,6 +78,14 @@ module.exports = (env, argv) => {
     },
     optimization: {
       minimize: isProduction,
+    },
+    devServer: {
+      static: {
+        directory: path.join(__dirname, 'dist'),
+      },
+      compress: true,
+      port: 9000,
+      hot: true,
     },
   };
 };
