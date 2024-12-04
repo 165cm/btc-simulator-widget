@@ -9,25 +9,13 @@ module.exports = {
     filename: 'btc-simulator-widget.js',
     library: {
       name: 'BTCSimulatorWidget',
-      type: 'umd'
+      type: 'umd',
+      export: 'default'  // デフォルトエクスポートを指定
     },
     globalObject: 'this',
     clean: true
   },
-  externals: {
-    react: {
-      commonjs: 'react',
-      commonjs2: 'react',
-      amd: 'react',
-      root: 'React'
-    },
-    'react-dom': {
-      commonjs: 'react-dom',
-      commonjs2: 'react-dom',
-      amd: 'react-dom',
-      root: 'ReactDOM'
-    }
-  },
+  // externalsの設定を削除（開発時は依存関係をバンドルに含める）
   module: {
     rules: [
       {
@@ -75,8 +63,5 @@ module.exports = {
     hot: true,
     open: true,
     port: 3000
-  },
-  performance: {
-    hints: false
   }
 };
