@@ -1,6 +1,6 @@
 const path = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
@@ -23,37 +23,50 @@ module.exports = (env, argv) => {
           test: /\.(js|jsx)$/,
           exclude: /node_modules/,
           use: {
-            loader: 'babel-loader'
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env', '@babel/preset-react']
+            }
           }
         },
         {
           test: /\.css$/,
           use: [
-            MiniCssExtractPlugin.loader,
-            'css-loader',
+            isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 1,
+                modules: {
+                  auto: true,
+                  localIdentName: '[name]__[local]--[hash:base64:5]'
+                }
+              }
+            },
             'postcss-loader'
           ]
         }
       ]
     },
-    plugins: [
-      new MiniCssExtractPlugin({
-        filename: 'btc-simulator-widget.css'
-      }),
-      new HtmlWebpackPlugin({
-        template: './src/index.html',
-        inject: true
-      })
-    ],
     resolve: {
       extensions: ['.js', '.jsx']
     },
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: './src/index.html',
+        inject: true
+      }),
+      new MiniCssExtractPlugin({
+        filename: 'btc-simulator-widget.css'
+      })
+    ],
     devServer: {
       static: {
         directory: path.join(__dirname, 'dist'),
       },
       hot: true,
-      open: true
+      open: true,
+      port: 3000
     }
   };
 };

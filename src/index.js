@@ -26,6 +26,6 @@ const BTCSimulatorWidget = {
   }
 };
 
-export default BTCSimulatorWidget;
 // グローバルオブジェクトとしても公開
 window.BTCSimulatorWidget = BTCSimulatorWidget;
+export default BTCSimulatorWidget;
