@@ -1,6 +1,6 @@
 module.exports = {
   content: ['./src/**/*.{js,jsx}'],
-  darkMode: 'media', // or 'class'
+  darkMode: 'media',
   theme: {
     extend: {},
   },
@@ -8,4 +8,5 @@ module.exports = {
   corePlugins: {
     preflight: false,
   },
+  important: true,
 }

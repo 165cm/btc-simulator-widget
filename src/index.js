@@ -3,29 +3,32 @@ import { createRoot } from 'react-dom/client';
 import BTCSimulator from './BTCSimulator';
 import './styles.css';
 
-// スタンドアロンモードの初期化
-const container = document.getElementById('btc-simulator');
-if (container) {
-  const root = createRoot(container);
-  root.render(
-    <React.StrictMode>
-      <BTCSimulator />
-    </React.StrictMode>
-  );
-}
-
-// ウィジェットとしてエクスポート
-const BTCSimulatorWidget = {
-  init: function(targetElement, options = {}) {
-    const root = createRoot(targetElement);
+// Wait for DOM to be ready
+const init = () => {
+  const container = document.getElementById('btc-simulator');
+  if (container) {
+    const root = createRoot(container);
     root.render(
       <React.StrictMode>
-        <BTCSimulator {...options} />
+        <BTCSimulator />
       </React.StrictMode>
     );
   }
 };
 
-// グローバルオブジェクトとしても公開
-window.BTCSimulatorWidget = BTCSimulatorWidget;
-export default BTCSimulatorWidget;
+// Export for widget usage
+window.BTCSimulatorWidget = {
+  init: (targetElement) => {
+    if (targetElement) {
+      const root = createRoot(targetElement);
+      root.render(<BTCSimulator />);
+    }
+  }
+};
+
+// Auto initialize if DOM is already loaded
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}

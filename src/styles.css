@@ -2,43 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Tailwindのリセットを上書き */
-.btc-simulator-widget, .btc-simulator-widget * {
+/* リセットスタイル */
+.btc-simulator-widget {
   all: revert;
+  box-sizing: border-box;
+}
+
+.btc-simulator-widget * {
   box-sizing: border-box;
 }
 
 /* ベーススタイル */
 .btc-simulator-widget {
-  width: 100% !important;
-  max-width: 800px !important;
-  margin: 0 auto !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-  background-color: #ffffff !important;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #ffffff;
+  line-height: 1.5;
 }
 
-/* レイアウトのリセット */
-.btc-simulator-widget * {
-  box-sizing: border-box !important;
+/* スライダーのスタイル */
+.btc-simulator-widget input[type="range"] {
+  width: 100%;
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 2px;
+  appearance: none;
+  outline: none;
 }
 
-/* フレームスタイル */
-.btc-simulator-widget .widget-frame {
-  background: linear-gradient(to bottom, #f0f9ff, #ffffff) !important;
-  border: 1px solid #e5f0ff !important;
-  border-radius: 0.75rem !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-  overflow: hidden !important;
-}
-
-/* グリッドレイアウト */
-.btc-simulator-widget .results-grid {
-  display: grid !important;
-  grid-template-columns: repeat(2, 1fr) !important;
-}
-
-@media (min-width: 768px) {
-  .btc-simulator-widget .results-grid {
-    grid-template-columns: repeat(4, 1fr) !important;
-  }
+.btc-simulator-widget input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #2563eb;
+  border-radius: 50%;
+  cursor: pointer;
 }

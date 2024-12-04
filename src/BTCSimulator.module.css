@@ -1,346 +1,402 @@
+/* BTCSimulator.module.css */
+
+/* ========================================
+* メインコンテナ
+* ======================================== */
 .container {
     width: 100% !important;
     max-width: 800px !important;
     margin: 0 auto !important;
+    padding: 0 !important;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-    background-color: #ffffff !important;
+    line-height: 1.5 !important;
+    background: transparent !important;
+   }
+   
+   /* ベースフレーム */
+   .frame {
+    position: relative !important;
+    background: rgb(249 250 251) !important;
+    border: 1px solid rgb(229 231 235) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    overflow: hidden !important;
+   }
+   
+   /* コンテンツラッパー */
+   .content {
+    position: relative !important;
+    padding: 24px !important;
+    z-index: 1 !important;
+   }
+   
+   /* ========================================
+   * ヘッダー部分
+   * ======================================== */
+   .title {
+    font-size: 24px !important;
+    font-weight: bold !important;
+    color: rgb(17 24 39) !important;
+    margin-bottom: 24px !important;
+    padding: 0 4px !important;
+   }
+   
+   /* 結果表示グリッド */
+   .resultsGrid {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 16px !important;
     padding: 20px !important;
-    box-sizing: border-box !important;
-  }  
-  
-  .frame {
-    background: linear-gradient(to bottom, #f0f9ff, #ffffff);
-    border: 1px solid #e5f0ff;
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-  }
-  
-  /* 結果表示部分 */
-  .resultsSection {
-    padding: 1rem;
-    border-bottom: 1px solid #e5e7eb;
-  }
-  
-  .title {
-    font-size: 1.125rem;
-    font-weight: bold;
-    margin-bottom: 0.75rem;
-  }
-  
-  .resultsGrid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
-    background-color: #f9fafb;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-  }
-  
-  @media (min-width: 768px) {
-    .resultsGrid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-  
-  .resultItem {
-    display: flex;
-    align-items: center;
-  }
-  
-  .label {
-    font-size: 0.875rem;
-    color: #4b5563;
-  }
-  
-  .value {
-    font-size: 0.875rem;
-    font-weight: bold;
-    margin-left: 0.5rem;
-  }
-  
-  /* コントロール部分 */
-  .controlsSection {
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  @media (min-width: 768px) {
-    .controlsSection {
-      flex-direction: row;
-    }
-  
-    .sliderGroup {
-      width: 40%;
-    }
-  
-    .chartContainer {
-      width: 60%;
-    }
-  }
-  
-  .sliderControl {
-    margin-bottom: 0.75rem;
-  }
-  
-  .sliderHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.25rem;
-  }
-  
-  .sliderLabel {
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-  
-  .sliderValue {
-    font-size: 0.75rem;
-    color: #6b7280;
-  }
-  
-  .slider {
-    width: 100%;
-    margin: 0.5rem 0;
-  }
-  
-  /* 時価総額比較部分 */
-  .marketCapSection {
-    padding: 0.75rem !important;
-    margin: 0 1rem 1rem !important;
-    background-color: #f0f7ff !important;
-    border-radius: 0.5rem !important;
+    background: white !important;
+    border-radius: 12px !important;
+    margin-bottom: 24px !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+   }
+   
+   .resultItem {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 8px !important;
+   }
+   
+   .label {
+    font-size: 14px !important;
+    color: rgb(107 114 128) !important;
+    white-space: nowrap !important;
+   }
+   
+   .value {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: rgb(17 24 39) !important;
+   }
+   
+   /* ========================================
+   * コントロールセクション
+   * ======================================== */
+   .controlsSection {
+    display: flex !important;
+    gap: 32px !important;
+    margin-bottom: 24px !important;
+   }
+   
+   /* スライダーグループ */
+   .sliderGroup {
+    flex: 1 !important;
+    min-width: 0 !important;
+   }
+   
+   .sliderControl {
+    margin-bottom: 20px !important;
+   }
+   
+   .sliderHeader {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 8px !important;
+   }
+   
+   .sliderLabel {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: rgb(55 65 81) !important;
+   }
+   
+   .sliderValue {
+    font-size: 13px !important;
+    color: rgb(107 114 128) !important;
+   }
+   
+   /* レンジスライダー */
+   .rangeInput {
+    width: 100% !important;
+    height: 4px !important;
+    background: rgb(229 231 235) !important;
+    border-radius: 2px !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    outline: none !important;
+   }
+   
+   .rangeInput::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    width: 16px !important;
+    height: 16px !important;
+    background: rgb(59 130 246) !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+   }
+   
+   /* グラフエリア */
+   .chartContainer {
+    flex: 1.5 !important;
+   }
+   
+   .chartWrapper {
+    height: 210px !important;
+    padding: 4px !important;
+   }
+   
+   /* ========================================
+   * 時価総額比較セクション
+   * ======================================== */
+   .marketCapSection {
+    background: white !important;
+    margin-bottom: 24px !important;
+    padding: 20px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+   }
+   
+   .marketCapHeader {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 16px !important;
+   }
+   
+   .marketCapTitle {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: rgb(17 24 39) !important;
+   }
+   
+   .marketCapValue {
+    font-size: 14px !important;
+    color: rgb(59 130 246) !important;
+   }
+   
+   .marketCapGrid {
     display: grid !important;
-    gap: 1rem !important;
-  }  
-  
-  .marketCapHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-  }
-  
-  .marketCapTitle {
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-  
-  .marketCapValue {
-    font-size: 0.75rem;
-    color: #2563eb;
-  }
-  
-  .marketCapGrid {
-    display: grid !important;
-    grid-template-columns: repeat(1, 1fr) !important;
-    gap: 0.5rem !important;
-  }
-  
-  @media (min-width: 768px) {
-    .marketCapGrid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-  
-  .marketCapItem {
-    background-color: #ffffff !important;
-    padding: 0.75rem !important;
-    border-radius: 0.5rem !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 12px !important;
+   }
+   
+   .marketCapItem {
     display: flex !important;
     align-items: center !important;
-  }  
-  
-  .marketCapItem.highlighted {
-    background-color: #dbeafe;
-  }
-  
-  .marketCapIcon {
-    width: 1rem;
-    height: 1rem;
-    margin-right: 0.375rem;
-  }
-  
-  .marketCapInfo {
-    min-width: 0;
-  }
-  
-  .marketCapName {
-    font-size: 0.875rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  .marketCapValue {
-    font-size: 0.75rem;
-    color: #6b7280;
-  }
-  
-  /* フッター部分 */
-  .footer {
-    border-top: 1px solid #e5e7eb;
-    position: relative;
-  }
-  
-  .disclaimer {
-    padding: 0.5rem;
-    font-size: 0.75rem;
-    color: #6b7280;
-    text-align: center;
-  }
-  
-  .credit {
-    padding: 0 0.5rem 0.5rem;
-    font-size: 0.75rem;
-    text-align: center;
-  }
-  
-  .creditLink {
-    color: #2563eb;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
-  
-  .creditLink:hover {
-    color: #1d4ed8;
-  }
-  
-  .infoButton {
-    position: absolute;
-    bottom: 0.5rem;
-    right: 0.5rem;
-    color: #2563eb;
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-  }
-  
-  .infoButton:hover {
-    color: #1d4ed8;
-  }
-  
-  .infoIcon {
-    width: 1.25rem;
-    height: 1.25rem;
-  }
-  
-  /* グラフ部分 */
-  .chart {
-    height: 10rem;
-    width: 100%;
-  }
-  
-  /* モーダル部分 */
-  .modal {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 50;
+    padding: 12px !important;
+    background: rgb(249 250 251) !important;
+    border-radius: 8px !important;
+    transition: background-color 0.2s ease !important;
+   }
+   
+   .marketCapItem.highlighted {
+    background: rgb(239 246 255) !important;
+   }
+   
+   .marketCapIcon {
+    width: 16px !important;
+    height: 16px !important;
+    margin-right: 8px !important;
+    flex-shrink: 0 !important;
+   }
+   
+   .marketCapInfo {
+    min-width: 0 !important;
+   }
+   
+   .marketCapName {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: rgb(17 24 39) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+   }
+   
+   .marketCapItemValue {
+    font-size: 12px !important;
+    color: rgb(107 114 128) !important;
+    margin-top: 2px !important;
+   }
+   
+   /* ========================================
+   * フッター
+   * ======================================== */
+   .footer {
+    border-top: 1px solid rgb(229 231 235) !important;
+    padding: 20px 0 0 !important;
+    text-align: center !important;
+    margin-top: 16px !important;
+   }
+   
+   .disclaimer {
+    font-size: 12px !important;
+    color: rgb(107 114 128) !important;
+    margin-bottom: 8px !important;
+   }
+   
+   .credit {
+    font-size: 12px !important;
+   }
+   
+   .creditLink {
+    color: rgb(59 130 246) !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    transition: color 0.2s ease !important;
+   }
+   
+   .creditLink:hover {
+    color: rgb(37 99 235) !important;
+   }
+   
+   /* ========================================
+   * レスポンシブ対応
+   * ======================================== */
+   @media (max-width: 767px) {
+    .content {
+      padding: 16px !important;
+    }
+   
+    .resultsGrid {
+      flex-wrap: wrap !important;
+    }
+   
+    .resultItem {
+      flex: 1 1 40% !important;
+    }
+   
+    .controlsSection {
+      flex-direction: column !important;
+    }
+   
+    .marketCapGrid {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+   }
+
+   /* ========================================
+ * モーダル
+ * ======================================== */
+.modal {
+    position: fixed !important;
+    inset: 0 !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 50 !important;
   }
   
   .modalContent {
-    background-color: white;
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-    max-width: 48rem; /* 32rem から 48rem に変更 */
-    width: 100%;
-    margin: 0 1rem;
-  }
-  
-
-  .codeBlockWrapper {
-    position: relative;
-    margin-bottom: 1rem;
-  }
-  
-  .codeBlock {
-    background-color: #f3f4f6;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.75rem; /* 0.875rem から 0.75rem に変更 */
-    line-height: 1.4;
-    overflow-x: auto;
-    white-space: pre;  /* pre-wrap から pre に変更 */
-    word-break: normal; /* break-all から normal に変更 */
-  }  
-  
-  .copyButton {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    padding: 0.25rem 0.75rem;
-    background-color: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 0.25rem;
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .copyButton:hover {
-    background-color: #1d4ed8;
+    background-color: white !important;
+    border-radius: 12px !important;
+    padding: 24px !important;
+    max-width: 48rem !important;
+    width: calc(100% - 32px) !important;
+    margin: 16px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
   }
   
   .modalTitle {
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
+    font-size: 20px !important;
+    font-weight: bold !important;
+    margin-bottom: 16px !important;
+    color: rgb(17 24 39) !important;
   }
   
   .modalSubtitle {
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 1rem 0 0.5rem;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    margin: 16px 0 8px !important;
+    color: rgb(31 41 55) !important;
+  }
+  
+  .codeBlockWrapper {
+    position: relative !important;
+    margin-bottom: 16px !important;
+    background-color: rgb(243 244 246) !important;
+    border-radius: 8px !important;
+  }
+  
+  .codeBlock {
+    padding: 16px !important;
+    font-family: ui-monospace, monospace !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+    overflow-x: auto !important;
+    white-space: pre !important;
+  }
+  
+  .copyButton {
+    position: absolute !important;
+    top: 8px !important;
+    right: 8px !important;
+    padding: 4px 12px !important;
+    background-color: rgb(37 99 235) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 4px !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+  }
+  
+  .copyButton:hover {
+    background-color: rgb(29 78 216) !important;
   }
   
   .modalList {
-    list-style-position: inside;
-    margin-bottom: 1.5rem;
+    list-style-type: decimal !important;
+    margin-left: 24px !important;
+    margin-bottom: 24px !important;
   }
   
   .modalList li {
-    margin-bottom: 0.5rem;
-    line-height: 1.5;
+    margin-bottom: 8px !important;
+    line-height: 1.5 !important;
+    color: rgb(55 65 81) !important;
   }
   
   .modalButton {
-    width: 100%;
-    padding: 0.5rem 1rem;
-    background-color: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 0.375rem;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    width: 100% !important;
+    padding: 8px 16px !important;
+    background-color: rgb(37 99 235) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-size: 16px !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
   }
   
   .modalButton:hover {
-    background-color: #1d4ed8;
+    background-color: rgb(29 78 216) !important;
   }
-
-  @media (min-width: 768px) {
-    .marketCapGrid {
-      grid-template-columns: repeat(4, 1fr) !important;
-    }
-  }
-
-  .btc-simulator-widget * {
-    all: revert !important;
-    box-sizing: border-box !important;
-    margin: 0 !important;
+  
+  /* インフォボタン */
+  .infoButton {
+    position: absolute !important;
+    right: 16px !important;
+    bottom: 16px !important;
+    background: white !important;
+    border: 1px solid rgb(226 232 240) !important;
+    border-radius: 50% !important;
+    width: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
     padding: 0 !important;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    color: rgb(37 99 235) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .infoButton:hover {
+    background-color: rgb(243 244 246) !important;
+    transform: scale(1.05) !important;
+  }
+  
+  .infoIcon {
+    width: 18px !important;
+    height: 18px !important;
   }
