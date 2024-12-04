@@ -1,81 +1,75 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = {
-  entry: './src/index.js',
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: '[name].bundle.js',
-    library: {
-      name: 'BTCSimulatorWidget',
-      type: 'umd'
-    },
-    clean: true,
-    publicPath: '/'
-  },
-  optimization: {
-    splitChunks: {
-      chunks: 'all',
-      cacheGroups: {
-        vendors: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all',
-        },
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true,
-        },
+module.exports = (env, argv) => {
+  const isProduction = argv.mode === 'production';
+
+  return {
+    entry: './src/index.js',
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: 'btc-simulator-widget.js',
+      library: {
+        name: 'BTCSimulatorWidget',
+        type: 'umd',
+        export: 'default',
       },
+      globalObject: 'this',
     },
-    usedExports: true,  // Tree Shaking を有効化
-    minimize: true      // プロダクションビルドで最小化
-  },
-  module: {
-    rules: [
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-react', '@babel/preset-env']
-          }
-        }
-      },
-      {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          'postcss-loader'
-        ]
-      }
-    ]
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: './src/index.html',
-      inject: 'body'
-    }),
-    new MiniCssExtractPlugin({
-      filename: 'styles.css'
-    }),
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-      openAnalyzer: true,
-      reportFilename: 'bundle-analysis.html'
-    })
-  ],
-  resolve: {
-    extensions: ['.js', '.jsx']
-  },
-  devServer: {
-    static: './dist',
-    hot: true,
-    open: true
-  }
+    externals: {
+      'react': 'React',
+      'react-dom': 'ReactDOM',
+      'recharts': 'Recharts',
+    },
+    module: {
+      rules: [
+        {
+          test: /\.(js|jsx)$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+          },
+        },
+        {
+          test: /\.css$/,
+          use: [
+            MiniCssExtractPlugin.loader,
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 1,
+              },
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions: {
+                  plugins: [
+                    'tailwindcss',
+                    'autoprefixer',
+                  ],
+                },
+              },
+            },
+          ],
+        },
+      ],
+    },
+    plugins: [
+      new MiniCssExtractPlugin({
+        filename: 'btc-simulator-widget.css',
+      }),
+      new HtmlWebpackPlugin({
+        template: './src/index.html',
+        inject: 'body',
+      }),
+    ],
+    resolve: {
+      extensions: ['.js', '.jsx'],
+    },
+    optimization: {
+      minimize: isProduction,
+    },
+  };
 };
